@@ -85,10 +85,10 @@ public class MoneySupport {
             Function<Map<Long, Object>, Object> factoryFunction = ObjectReaderCreator.INSTANCE.createFactoryFunction(factoryMethod, paramNames);
 
             FieldReader fieldReader0 = ObjectReaderCreator.INSTANCE.createFieldReaderParam(
-                    MoneySupport.class, MoneySupport.class, "currency", 0, 0, null, CLASS_CURRENCY_UNIT, CLASS_CURRENCY_UNIT, "currency", null, null, null
+                    MoneySupport.class, MoneySupport.class, "currency", 0, 0, null, null, CLASS_CURRENCY_UNIT, CLASS_CURRENCY_UNIT, "currency", null, null, null
             );
             FieldReader fieldReader1 = ObjectReaderCreator.INSTANCE.createFieldReaderParam(
-                    MoneySupport.class, MoneySupport.class, "number", 0, 0, null, CLASS_DEFAULT_NUMBER_VALUE, CLASS_DEFAULT_NUMBER_VALUE, "number", null, null, null
+                    MoneySupport.class, MoneySupport.class, "number", 0, 0, null, null, CLASS_DEFAULT_NUMBER_VALUE, CLASS_DEFAULT_NUMBER_VALUE, "number", null, null, null
             );
 
             FieldReader[] fieldReaders = {fieldReader0, fieldReader1};
