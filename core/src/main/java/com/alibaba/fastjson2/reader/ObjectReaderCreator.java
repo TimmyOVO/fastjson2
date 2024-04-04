@@ -985,7 +985,7 @@ public class ObjectReaderCreator {
                 constructor.setAccessible(true);
                 return (ObjectReader<T>) constructor.newInstance();
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
+                    InvocationTargetException e) {
                 throw new JSONException("create deserializer error", e);
             }
         }
@@ -1639,7 +1639,7 @@ public class ObjectReaderCreator {
             if (!record) {
                 BeanUtils.declaredFields(objectClass, field -> {
                     fieldInfo.init();
-                    fieldInfo.ignore = (field.getModifiers() & Modifier.PUBLIC) == 0;
+                    fieldInfo.ignore = (field.getModifiers() & Modifier.PUBLIC) == 0 && ((beanFeatures & JSONReader.Feature.FieldBased.mask) == 0);
                     fieldInfo.features |= beanFeatures;
                     fieldInfo.format = beanFormat;
 
@@ -2616,7 +2616,7 @@ public class ObjectReaderCreator {
 
         if (field != null) {
             String objectClassName = objectClass.getName();
-            if (!objectClassName.startsWith("java.lang") && !objectClassName.startsWith("java.time")) {
+            if (!objectClassName.startsWith("java.lang") && !objectClassName.startsWith("java.time") && !field.getDeclaringClass().getName().startsWith("java.lang") && !field.getDeclaringClass().getName().startsWith("java.time")) {
                 field.setAccessible(true);
             }
         }
@@ -3310,8 +3310,12 @@ public class ObjectReaderCreator {
     }
 
     private void putIfAbsent(Map<String, List<FieldReader>> fieldReaders, String fieldName, FieldReader fieldReader, Class objectClass) {
-        List<FieldReader> origin = fieldReaders.putIfAbsent(fieldName, listOf(fieldReader));
-        if (origin != null && !fieldReader.isReadOnly()) {
+        List<FieldReader> origin = fieldReaders.get(fieldName);
+        if (origin == null) {
+            fieldReaders.put(fieldName, listOf(fieldReader));
+            return;
+        }
+        if (!fieldReader.isReadOnly()) {
             FieldReader finalReader = fieldReader;
             FieldReader sameReader = origin.stream().filter(o -> o.sameTo(finalReader)).findAny().orElse(null);
             if (sameReader != null) {
